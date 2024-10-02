@@ -2,9 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  template: '<app-map></app-map>',
+  styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  title = 'map';
-}
+export class AppComponent {}
