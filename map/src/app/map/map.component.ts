@@ -1,51 +1,61 @@
-import { Component, OnInit } from '@angular/core';
-import { MapMarker } from '@angular/google-maps';
+import { Component } from '@angular/core';
 
-type SiteType = 'ZLD' | 'CTOI';
+interface Marker {
+  type: string;
+  label: string;
+  position: { lat: number; lng: number };
+  icon?: string; 
+}
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
-export class MapComponent implements OnInit {
-  // Center the map at a default location (India)
-  center: google.maps.LatLngLiteral = { lat: 19.7291, lng: 79.0008 };
+export class MapComponent {
+  center = { lat: 20.5937, lng: 78.9629 };  // India
   zoom = 5;
-
-  // Marker icons for each type
-  markerIcons = {
-    ZLD: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',  // Green for ZLD
-    CTOI: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'   // Blue for CTOI
+  mapOptions = {
+    mapTypeId: 'roadmap', 
+    disableDefaultUI: true,
+    styles: []  
   };
 
-  // All site markers with types and marker icons
-  markers = [
-    { type: 'ZLD' as SiteType, label: 'ZLD Site 1', position: { lat: 19.0760, lng: 72.8777 }, icon: this.markerIcons.ZLD },
-    { type: 'ZLD' as SiteType, label: 'ZLD Site 2', position: { lat: 28.7041, lng: 77.1025 }, icon: this.markerIcons.ZLD },
-    { type: 'CTOI' as SiteType, label: 'CTOI Site 1', position: { lat: 13.0827, lng: 80.2707 }, icon: this.markerIcons.CTOI },
-    { type: 'CTOI' as SiteType, label: 'CTOI Site 2', position: { lat: 22.5726, lng: 88.3639 }, icon: this.markerIcons.CTOI },
+  defaultIcon = 'http://maps.google.com/mapfiles/ms/icons/default-dot.png';
+
+  markers: Marker[] = [
+    { type: 'ZLD', label: 'Mumbai', position: { lat: 19.0760, lng: 72.8777 }, icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' },
+    { type: 'ZLD', label: 'New Delhi', position: { lat: 28.7041, lng: 77.1025 }, icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' },
+    { type: 'CTOI', label: 'Chennai', position: { lat: 13.0827, lng: 80.2707 }, icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png' },
+    { type: 'CTOI', label: 'Kolkata', position: { lat: 22.5726, lng: 88.3639 }, icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png' },
+    { type: 'CTOII', label: 'Hyderabad', position: { lat: 17.4065, lng: 78.4772 }, icon: 'http://maps.google.com/mapfiles/ms/icons/orange-dot.png' },
+    { type: 'CTOII', label: 'Bengaluru', position: { lat: 12.9716, lng: 77.5946 }, icon: 'http://maps.google.com/mapfiles/ms/icons/orange-dot.png' }
   ];
 
-  // Filtered markers based on user toggle
-  filteredMarkers = [...this.markers];
+  filteredMarkers: Marker[] = [...this.markers];
 
-  // Currently active types
-  activeTypes = {
-    ZLD: true,
-    CTOI: true,
+  activeTypes: { [key: string]: boolean } = {
+    ZLD: false,
+    CTOI: false,
+    CTOII: false
   };
 
-  ngOnInit() {}
+  selectedMarker: Marker | null = null;
 
-  // Toggle visibility of markers by type
-  toggleType(type: SiteType) {
-    this.activeTypes[type] = !this.activeTypes[type];
-    this.filterMarkers();
+  toggleType(type: string) {
+    if (this.activeTypes.hasOwnProperty(type)) { 
+      this.activeTypes[type] = !this.activeTypes[type];
+      this.filteredMarkers = this.markers.filter(marker => this.activeTypes[marker.type]);
+    } else {
+      console.warn(`Type "${type}" is not defined in activeTypes.`);
+    }
   }
 
-  // Filter markers based on active types
-  filterMarkers() {
-    this.filteredMarkers = this.markers.filter(marker => this.activeTypes[marker.type]);
+  showDetails(marker: Marker) {
+    this.selectedMarker = marker; 
+  }
+
+  closePopup() {
+    this.selectedMarker = null; 
   }
 }
