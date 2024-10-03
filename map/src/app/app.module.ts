@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { MapComponent } from './map/map.component';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { NgxGaugeModule } from 'ngx-gauge';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { GoogleMapsModule } from '@angular/google-maps';
   imports: [
     BrowserModule,
     GoogleMapsModule,
-    FormsModule
+    FormsModule,
+    NgxGaugeModule
   ],
   providers: [],
   bootstrap: [AppComponent]
