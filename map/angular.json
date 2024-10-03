@@ -39,9 +39,7 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": [
-              "https://maps.googleapis.com/maps/api/js?key=AIzaSyCF7AvSThDoRvYfWiROtKerVhMcxfWOZ8w"
-            ],
+            "scripts": [],
             "server": "src/main.server.ts",
             "prerender": true,
             "ssr": {
