@@ -1,48 +1,44 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-interface Site {
-  name: string;
-  lat: number;
-  lng: number;
-  type: string;
-  iconUrl: string; // URL for the marker icon
-  link: string; // Google Maps link for the site
-}
+type SiteType = 'ZLD' | 'CTOI';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
-export class MapComponent {
-  zoom = 10;
-  center: google.maps.LatLngLiteral = { lat: 37.7749, lng: -122.4194 };
+export class MapComponent implements OnInit {
+  // Center the map at a default location (India)
+  center: google.maps.LatLngLiteral = { lat: 19.7291, lng: 79.0008 };
+  zoom = 5;
 
-  // Define the sites with their respective types and icons
-  sites: Site[] = [
-    { name: 'Site A', lat: 37.7749, lng: -122.4194, type: 'ZLD', iconUrl: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png', link: 'https://www.google.com/maps?q=37.7749,-122.4194' },
-    { name: 'Site B', lat: 37.8049, lng: -122.4494, type: 'CTDI', iconUrl: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png', link: 'https://www.google.com/maps?q=37.8049,-122.4494' },
+  // All site markers with types
+  markers = [
+    { type: 'ZLD', label: 'ZLD Site 1', position: { lat: 19.0760, lng: 72.8777 } },
+    { type: 'ZLD', label: 'ZLD Site 2', position: { lat: 28.7041, lng: 77.1025 } },
+    { type: 'CTOI', label: 'CTOI Site 1', position: { lat: 13.0827, lng: 80.2707 } },
+    { type: 'CTOI', label: 'CTOI Site 2', position: { lat: 22.5726, lng: 88.3639 } },
   ];
 
-  // Track which types are enabled for toggling
-  selectedTypes: string[] = ['ZLD', 'CTDI'];
+  // Filtered markers based on user toggle
+  filteredMarkers = [...this.markers];
 
-  // Toggle the visibility of markers by type
-  toggleType(type: string) {
-    if (this.selectedTypes.includes(type)) {
-      this.selectedTypes = this.selectedTypes.filter(t => t !== type);
-    } else {
-      this.selectedTypes.push(type);
-    }
+  // Currently active types
+  activeTypes: { [key in SiteType]: boolean } = {
+    ZLD: true,
+    CTOI: true,
+  };
+
+  ngOnInit() {}
+
+  // Toggle visibility of markers by type
+  toggleType(type: SiteType) {
+    this.activeTypes[type] = !this.activeTypes[type];
+    this.filterMarkers();
   }
 
-  // Determine whether to display the marker based on the selected type
-  showMarker(site: Site): boolean {
-    return this.selectedTypes.includes(site.type);
-  }
-
-  // Open the location in Google Maps
-  openLocation(site: Site) {
-    window.open(site.link, '_blank');
+  // Filter markers based on active types (using type assertion)
+  filterMarkers() {
+    this.filteredMarkers = this.markers.filter(marker => this.activeTypes[marker.type as SiteType]);
   }
 }
