@@ -1,17 +1,37 @@
-<div class="map-container">
-  <!-- Google Map -->
-  <google-map height="450px" width="100%" [center]="center" [zoom]="zoom">
-    <!-- Display each marker -->
-    <map-marker
-      *ngFor="let marker of filteredMarkers"
-      [position]="marker.position"
-      [label]="marker.label">
-    </map-marker>
-  </google-map>
-  
-  <!-- Type Toggle Controls -->
+<div class="container">
   <div class="toggle-controls">
-    <button (click)="toggleType('ZLD')">Toggle ZLD Sites</button>
-    <button (click)="toggleType('CTOI')">Toggle CTOI Sites</button>
+    <h2>Dr. Reddy's</h2>
+    <label>
+      <input type="checkbox" (change)="toggleType('ZLD')" />
+      Toggle ZLD Sites
+    </label>
+    <label>
+      <input type="checkbox" (change)="toggleType('CTOI')" />
+      Toggle CTOI Sites
+    </label>
+    <label>
+      <input type="checkbox" (change)="toggleType('CTOII')" />
+      Toggle CTOII Sites
+    </label>
+  </div>
+
+  <div class="map-container">
+    <google-map [center]="center" [zoom]="zoom" [options]="mapOptions" height="500px" width="100%">
+      <map-marker *ngFor="let marker of filteredMarkers"
+                  [position]="marker.position"
+                  [label]="marker.label"
+                  [icon]="marker.icon || defaultIcon"  
+                  (mapClick)="showDetails(marker)">
+      </map-marker>
+    </google-map>
+  </div>
+</div>
+
+
+<div class="modal" *ngIf="selectedMarker">
+  <div class="modal-content">
+    <span class="close" (click)="closePopup()">&times;</span>
+    <h2>{{ selectedMarker.label }}</h2>
+    <p>Type: {{ selectedMarker.type }}</p>
   </div>
 </div>
