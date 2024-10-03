@@ -1,37 +1,63 @@
 <div class="container">
   <div class="toggle-controls">
-    <h2>Dr. Reddy's</h2>
-    <label>
-      <input type="checkbox" (change)="toggleType('ZLD')" />
-      Toggle ZLD Sites
-    </label>
-    <label>
-      <input type="checkbox" (change)="toggleType('CTOI')" />
-      Toggle CTOI Sites
-    </label>
-    <label>
-      <input type="checkbox" (change)="toggleType('CTOII')" />
-      Toggle CTOII Sites
-    </label>
+    <h2 class="heading-site">Dr. Reddy's</h2>
+    <div class="toggle-options">
+      <label>
+        <input type="checkbox" [checked]="activeTypes['ZLD']" (change)="toggleType('ZLD')" />
+        <span class="color-indicator" style="background-color: red;"></span> ZLD (3 sites)
+      </label>
+      <label>
+        <input type="checkbox" [checked]="activeTypes['CTO1']" (change)="toggleType('CTO1')" />
+        <span class="color-indicator" style="background-color: green;"></span> CTO 1 (3 sites)
+      </label>
+      <label>
+        <input type="checkbox" [checked]="activeTypes['CTO2']" (change)="toggleType('CTO2')" />
+        <span class="color-indicator" style="background-color: orange;"></span> CTO 2 (3 sites)
+      </label>
+      <label>
+        <input type="checkbox" [checked]="activeTypes['CTO3']" (change)="toggleType('CTO3')" />
+        <span class="color-indicator" style="background-color: blue;"></span> CTO 3 (3 sites)
+      </label>
+    </div>
   </div>
 
   <div class="map-container">
-    <google-map [center]="center" [zoom]="zoom" [options]="mapOptions" height="500px" width="100%">
+    <!-- Google Map -->
+    <google-map [center]="center" [zoom]="zoom" height="500px" width="100%">
       <map-marker *ngFor="let marker of filteredMarkers"
                   [position]="marker.position"
-                  [label]="marker.label"
-                  [icon]="marker.icon || defaultIcon"  
+                  [icon]="marker.icon || defaultIcon"
                   (mapClick)="showDetails(marker)">
       </map-marker>
+
+      <!-- Popup for the selected marker -->
+      <div *ngIf="selectedMarker" 
+           class="popup" 
+           [ngStyle]="{ top: popupPosition.top + 'px', left: popupPosition.left + 'px' }">
+        <div class="popup-content">
+          <span class="close" (click)="closePopup()">&times;</span>
+          <h3>{{ selectedMarker.label }}</h3>
+          <p>Type: {{ selectedMarker.type }}</p>
+
+          <!-- Gauge for Site Score -->
+          <ngx-gauge 
+            [type]="'full'" 
+            [value]="selectedMarker.siteScore !== undefined ? selectedMarker.siteScore : 0" 
+            [thick]="10" 
+            [label]="'Site Score'" 
+            [min]="0" 
+            [max]="100" 
+            [foregroundColor]="'#45c7ed'" 
+            [backgroundColor]="'#eaeaea'" 
+            [cap]="'round'">
+          </ngx-gauge>
+
+          
+
+          <label for="statistics">Statistics:</label>
+          <input type="full" id="statistics" [(ngModel)]="predefinedStatistics" />
+        </div>
+      </div>
     </google-map>
-  </div>
-</div>
-
-
-<div class="modal" *ngIf="selectedMarker">
-  <div class="modal-content">
-    <span class="close" (click)="closePopup()">&times;</span>
-    <h2>{{ selectedMarker.label }}</h2>
-    <p>Type: {{ selectedMarker.type }}</p>
   </div>
 </div>
